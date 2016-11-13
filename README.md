@@ -1,1 +1,1 @@
-Ansible role for setting up letsencrypt.
+Ansible role for setting up letsencrypt and nginx.

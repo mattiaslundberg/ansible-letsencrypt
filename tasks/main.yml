@@ -1,0 +1,56 @@
+---
+- name: Install nginx
+  apt: name=nginx state=latest
+
+- name: Install letsencrypt
+  apt: name=letsencrypt state=latest
+
+- name: Create letsencrypt directory
+  file: name=/var/www/letsencrypt state=directory
+
+- name: Remove default nginx config
+  file: name=/etc/nginx/sites-enabled/default state=absent
+
+- name: Install system wide nginx config
+  template:
+    src: templates/nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+  notify:
+    - restart nginx
+
+- name: Generate dhparams
+  shell: openssl dhparam -out /etc/nginx/dhparams.pem 2048
+  args:
+    creates: /etc/nginx/dhparams.pem
+  notify:
+    - restart nginx
+
+- name: Install nginx site for letsencrypt requests
+  template:
+    src: templates/nginx-http.j2
+    dest: /etc/nginx/sites-enabled/http
+  notify:
+    - restart nginx
+
+- name: Restart nginx to activate letsencrypt site
+  service: name=nginx state=restarted
+
+- name: Request certificate from letsencrypt
+  shell: letsencrypt certonly -n --webroot -w /var/www/letsencrypt -m {{ letsencrypt_email }} --agree-tos -d {{ domain_name }}
+  args:
+    creates: /etc/letsencrypt/live/{{ domain_name }}
+  notify:
+    - restart nginx
+
+- name: Install nginx config for HTTPS site
+  template:
+    src: templates/nginx-app.j2
+    dest: /etc/nginx/sites-enabled/app
+  notify:
+    - restart nginx
+
+- name: Add letsencrypt cronjob for cert renewal
+  cron:
+    name: letsencrypt_renewal
+    special_time: weekly
+    job: letsencrypt --renew certonly -n --webroot -w /var/www/letsencrypt -m {{ letsencrypt_email }} --agree-tos -d {{ domain_name }}  && service nginx reload
