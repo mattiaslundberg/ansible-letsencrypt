@@ -1,15 +1,5 @@
 ---
-- name: Install nginx
-  apt: name=nginx state=latest
-
-- name: Install letsencrypt
-  apt: name=letsencrypt state=latest
-
-- name: Create letsencrypt directory
-  file: name=/var/www/letsencrypt state=directory
-
-- name: Remove default nginx config
-  file: name=/etc/nginx/sites-enabled/default state=absent
+- include: installation.yml
 
 - name: Install system wide nginx config
   template:
@@ -33,7 +23,9 @@
     - restart nginx
 
 - name: Restart nginx to activate letsencrypt site
-  service: name=nginx state=restarted
+  service:
+    name: nginx
+    state: restarted
 
 - name: Request certificate from letsencrypt
   shell: letsencrypt certonly -n --webroot -w /var/www/letsencrypt -m {{ letsencrypt_email }} --agree-tos -d {{ domain_name }}
