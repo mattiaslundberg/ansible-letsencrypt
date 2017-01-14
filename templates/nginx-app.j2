@@ -29,6 +29,8 @@ server {
     root /var/www/{{ domain_name }};
     index index.html index.htm;
 
+    {{ extra_location_blocks }}
+
     location / {
         try_files $uri $uri/ =404;
     }
