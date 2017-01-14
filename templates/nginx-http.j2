@@ -9,9 +9,9 @@ server {
         try_files $uri $uri/ =404;
     }
 
+    {{ extra_location_blocks }}
+
     location / {
         rewrite ^ https://{{ domain_name }}$request_uri? permanent;
     }
-
-    {{ extra_location_blocks }}
 }
