@@ -1,3 +1,17 @@
 ---
-dependencies:
+galaxy_info:
+  author: Mattias Lundberg
+  description: Installation of nginx and and letsencrypt certificate
+  license: MIT
+  min_ansible_version: 2.2
 
+  platforms:
+    - name: Ubuntu
+      versions:
+        - xenial
+
+  galaxy_tags:
+    - letsencrypt
+    - nginx
+
+dependencies: []
