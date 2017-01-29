@@ -1,4 +1,4 @@
-Role Name
+mlundberg.letsencrypt
 =========
 
 Install nginx and letsencrypt for simple hosting of static resources.
