@@ -8,12 +8,12 @@ add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsaf
 #
 server {
     listen [::]:443 ssl default deferred ipv6only=off;
-    server_name {{ domain_name }};
+    server_name {{ letsencrypt_domain_name }};
 
     ssl on;
-    ssl_certificate         /etc/letsencrypt/live/{{ domain_name }}/fullchain.pem;
-    ssl_certificate_key     /etc/letsencrypt/live/{{ domain_name }}/privkey.pem;
-    ssl_trusted_certificate /etc/letsencrypt/live/{{ domain_name }}/fullchain.pem;
+    ssl_certificate         /etc/letsencrypt/live/{{ letsencrypt_domain_name }}/fullchain.pem;
+    ssl_certificate_key     /etc/letsencrypt/live/{{ letsencrypt_domain_name }}/privkey.pem;
+    ssl_trusted_certificate /etc/letsencrypt/live/{{ letsencrypt_domain_name }}/fullchain.pem;
 
     ssl_session_cache shared:SSL:50m;
     ssl_session_timeout 5m;
@@ -29,10 +29,10 @@ server {
     ssl_dhparam /etc/nginx/dhparams.pem;
     ssl_prefer_server_ciphers on;
 
-    root /var/www/{{ domain_name }};
+    root /var/www/{{ letsencrypt_domain_name }};
     index index.html index.htm;
 
-    {{ extra_location_blocks }}
+    {{ letsencrypt_extra_location_blocks }}
 
     location / {
         try_files $uri $uri/ =404;

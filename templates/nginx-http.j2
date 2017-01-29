@@ -2,7 +2,7 @@ server_tokens off;
 
 server {
     listen [::]:80 default_server ipv6only=off;
-    server_name {{ domain_name }};
+    server_name {{ letsencrypt_domain_name }};
 
     location /.well-known/acme-challenge {
         root /var/www/letsencrypt;
@@ -10,6 +10,6 @@ server {
     }
 
     location / {
-        rewrite ^ https://{{ domain_name }}$request_uri? permanent;
+        rewrite ^ https://{{ letsencrypt_domain_name }}$request_uri? permanent;
     }
 }

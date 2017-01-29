@@ -28,9 +28,9 @@
     state: restarted
 
 - name: Request certificate from letsencrypt
-  shell: letsencrypt certonly -n --webroot -w /var/www/letsencrypt -m {{ letsencrypt_email }} --agree-tos -d {{ domain_name }}
+  shell: letsencrypt certonly -n --webroot -w /var/www/letsencrypt -m {{ letsencrypt_email }} --agree-tos -d {{ letsencrypt_domain_name }}
   args:
-    creates: /etc/letsencrypt/live/{{ domain_name }}
+    creates: /etc/letsencrypt/live/{{ letsencrypt_domain_name }}
   notify:
     - restart nginx
 
@@ -45,4 +45,4 @@
   cron:
     name: letsencrypt_renewal
     special_time: weekly
-    job: letsencrypt --renew certonly -n --webroot -w /var/www/letsencrypt -m {{ letsencrypt_email }} --agree-tos -d {{ domain_name }} && service nginx restart
+    job: letsencrypt --renew certonly -n --webroot -w /var/www/letsencrypt -m {{ letsencrypt_email }} --agree-tos -d {{ letsencrypt_domain_name }} && service nginx restart
